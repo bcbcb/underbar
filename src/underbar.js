@@ -41,11 +41,9 @@ var _ = {};
   _.last = function(array, n) {
     if (n === undefined) {
       return array[(array.length - 1)];
-    }
-    if (n > array.length) {
+    } else if (n > array.length) {
       return array.slice();
-    }
-    else {
+    } else {
       return array.slice( (array.length - n));
     }
   };
@@ -60,10 +58,9 @@ var _ = {};
       for (var i = 0; i < collection.length; i++) {
         iterator( collection[i], i, collection );
       }
-    }
-    else {
+    } else {
       for (var j in collection) {  
-       iterator( collection[j], j, collection );
+        iterator( collection[j], j, collection );
       }
     }
   };
@@ -123,11 +120,9 @@ var _ = {};
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
     var results = [];
-    
     _.each(collection, function(item, index) {
       results.push(iterator(item, index));
     });
-
     return results;
   };
 
