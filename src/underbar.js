@@ -61,10 +61,9 @@ var _ = {};
         iterator( collection[i], i, collection );
       }
     }
-
     else {
-      for (var item in collection) {  
-       iterator( collection[item], item, collection );
+      for (var j in collection) {  
+       iterator( collection[j], j, collection );
       }
     }
   };
