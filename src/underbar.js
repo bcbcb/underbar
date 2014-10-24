@@ -87,20 +87,20 @@ var _ = {};
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
-    var passed = [];
+    var results = [];
     _.each(collection, function(item, index) {
       if( test(item) ) {
-        passed.push(item);
+        results.push(item);
       }
     });
-    return passed;
+    return results;
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    return _.filter(collection, function reject (item) {
+    return _.filter(collection, function (item) {
       return !test(item);
     });
   };
