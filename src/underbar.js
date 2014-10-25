@@ -229,19 +229,25 @@ var _ = {};
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
-    var result = obj || {};
     var properties = Array.prototype.slice.call(arguments, 1);
     _.each(properties, function(item){
       _.each(Object.keys(item), function(key) {
-        result[key] = item[key];
+        obj[key] = item[key];
       });
     });
-    return result;
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var properties = Array.prototype.slice.call(arguments, 1);
+    _.each(properties, function(item){
+      _.each(Object.keys(item), function(key) {
+        obj[key] = key in obj ? obj[key] : item[key];
+      });
+    });
+    return obj;
   };
 
 
