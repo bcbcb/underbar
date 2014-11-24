@@ -346,14 +346,27 @@ var _ = {};
   // If iterator is a string, sort objects by that property with the name
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
-  _.sortBy = function(collection, iterator) {    
+  _.sortBy = function(collection, iterator) {
+    var results = [];
+
+    if (typeof iterator === 'string') {
+      var property = iterator;
+      iterator = function (el) {
+        return el[property];
+      };
+    }
+
     var iterated = _.map(collection, iterator);
-    var order = _.map(iterated.slice().sort(), function(el) {
-      return _.indexOf(iterated, el);
-    });
-    return _.map(order, function(index) {
-      return collection[index];
-    });
+    var ordered = iterated.slice().sort();
+    var collectionCopy = collection.slice();
+
+    for (var i = 0; i < collection.length; i++) {
+      var index = _.indexOf( iterated, ordered.shift() );
+      iterated.splice(index, 1);
+      results.push( collectionCopy.splice(index, 1)[0] );
+    }
+
+    return results;
   };
 
   // Zip together two or more arrays with elements of the same index
