@@ -398,19 +398,16 @@ var _ = {};
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
     var results = [];
-
-    var getEl = function (arr) {
+    var getAllElements = function (arr) {
       if (!Array.isArray(arr)) {
-        results.push(arr)
+        results.push(arr);
       } else {
         for (var i = 0; i < arr.length; i++) {
-          getEl(arr[i]);
+          getAllElements(arr[i]);
         }
       }
     };
-
-    getEl(nestedArray);
-
+    getAllElements(nestedArray);
     return results;
   };
 
