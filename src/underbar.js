@@ -104,14 +104,15 @@ var _ = {};
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
-    for (var i = 0; i < array.length; i++) {
-      for (var j = i; j < array.length; j++) {
-        if (array[j] === array[i] && j !== i){
-          array.splice(j, 1);
+    var results = array.slice();
+    for (var i = 0; i < results.length; i++) {
+      for (var j = i; j < results.length; j++) {
+        if (results[j] === results[i] && j !== i){
+          results.splice(j, 1);
         }
       }
     }
-    return array;
+    return results;
   };
 
   // Return the results of applying an iterator to each element.
@@ -149,7 +150,7 @@ var _ = {};
   _.invoke = function(collection, functionOrKey, args) {
     return _.map(collection, function(item) {
       return (typeof functionOrKey === 'function' ? functionOrKey : item[functionOrKey])
-        .apply(item, args);
+      .apply(item, args);
     });
   };
 
@@ -166,15 +167,15 @@ var _ = {};
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
   //   }, 0); // should be 6
-  _.reduce = function(collection, iterator, accumulator) {
-    if (typeof accumulator === 'undefined') {
-      accumulator = collection[0];
-    }
-    _.each(collection, function(item) {
-      accumulator = iterator(accumulator, item);
-    });
-    return accumulator;
-  };
+_.reduce = function(collection, iterator, accumulator) {
+  if (typeof accumulator === 'undefined') {
+    accumulator = collection[0];
+  }
+  _.each(collection, function(item) {
+    accumulator = iterator(accumulator, item);
+  });
+  return accumulator;
+};
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
@@ -228,15 +229,15 @@ var _ = {};
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj) {
-    var properties = Array.prototype.slice.call(arguments, 1);
-    _.each(properties, function(item){
-      _.each(Object.keys(item), function(key) {
-        obj[key] = item[key];
-      });
+_.extend = function(obj) {
+  var properties = Array.prototype.slice.call(arguments, 1);
+  _.each(properties, function(item){
+    _.each(Object.keys(item), function(key) {
+      obj[key] = item[key];
     });
-    return obj;
-  };
+  });
+  return obj;
+};
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
@@ -324,15 +325,15 @@ var _ = {};
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
-      var result = [];
-      var arr = array.slice(0);
-      var originalLength = arr.length;
-      for (var i = 0; i < originalLength; i++) {
-        var randomKey = Math.floor(arr.length * Math.random());
-        result.push(arr[randomKey]);
-        arr.splice(randomKey, 1);
-      }
-      return result;
+    var result = [];
+    var arr = array.slice(0);
+    var originalLength = arr.length;
+    for (var i = 0; i < originalLength; i++) {
+      var randomKey = Math.floor(arr.length * Math.random());
+      result.push(arr[randomKey]);
+      arr.splice(randomKey, 1);
+    }
+    return result;
   };
 
 
@@ -440,11 +441,13 @@ var _ = {};
     var arrays = Array.prototype.slice.call(arguments, 0);
     var firstArray = arrays.shift();
     var otherArraysElements = _.flatten(arrays);
-    _.each(firstArray, function(el, index, collection) {
+
+    _.each(firstArray, function(el) {
       if (!_.contains(otherArraysElements, el)) {
         results.push(el);
       }
     });
+    
     return results;
   };
 
@@ -459,6 +462,41 @@ var _ = {};
   //
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
+    var throttled = false;
+    var scheduled = false;
+    var result;
+
+    return function() {
+
+      if (!throttled) {
+        result = func.call(this);
+        throttled = true;
+        
+        setTimeout(function(){
+          if (scheduled) {
+            throttled = true;
+            setTimeout(function() {
+              throttled = false;
+            }, wait);
+            result = func.call(this);
+            scheduled = false;
+            return result;
+          } else {
+            throttled = false;
+          }
+        }, wait);
+
+        return result;
+      }
+
+      if (throttled) {
+        if (!scheduled) {
+          scheduled = true;
+        }
+        return result;
+      }
+
+    };
   };
 
 }).call(this);
